@@ -48,6 +48,8 @@ blueprint:
     |`artist`|`band`, `group`|
 
     |`track`|`song`|
+    
+    |`audiobook`|`book`|
 
     |`radio`|`radio station`, `radio`|
 
@@ -130,6 +132,16 @@ blueprint:
           default:
           - (shuffle|play|listen to) [the ](track|song) {media_name} [by [the ](artist|band|group)
             {artist}] [(in|on|using) [the ]{area_or_player_name}][ (with|using) {radio_mode}]
+        audiobook_trigger:
+          name: Audiobook trigger
+          description: The trigger sentences to request a specific audiobook.
+          selector:
+            text:
+              multiline: false
+              multiple: true
+          default:
+          - (shuffle|play|listen to) [the ](audiobook|book) {media_name} [by [the ](author|artist)
+            {artist}] [(in|on|using) [the ]{area_or_player_name}][ (with|using) {radio_mode}]
         artist_trigger:
           name: Artist trigger
           description: The trigger sentences to request music from a specific artist.
@@ -177,6 +189,9 @@ triggers:
 - trigger: conversation
   command: !input track_trigger
   id: track
+- trigger: conversation
+  command: !input audiobook_trigger
+  id: audiobook
 - trigger: conversation
   command: !input artist_trigger
   id: artist
