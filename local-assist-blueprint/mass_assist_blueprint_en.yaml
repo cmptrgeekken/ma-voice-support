@@ -245,6 +245,9 @@ actions:
     shuffle: '{{ shuffle }}'
   target:
     entity_id: '{{ mass_player_entity_id }}'
+- wait_template: "{{ states('media_player.living_room_speaker_2') == 'playing' }}"
+  continue_on_timeout: true
+  timeout: "00:00:30"
 - if:
     - condition: template
       value_template: "{{ restart_media }}"
