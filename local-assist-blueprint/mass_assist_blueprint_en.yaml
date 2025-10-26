@@ -141,7 +141,7 @@ blueprint:
               multiple: true
           default:
           - (shuffle|play|listen to) [the ](audiobook|book) {media_name} [by [the ](author|artist)
-            {artist}] [(in|on|using) [the ]{area_or_player_name}][ (with|using) {radio_mode}]
+            {artist}] [(in|on|using) [the ]{area_or_player_name}][ (with|using) {radio_mode}][from [the ]beginning]
         artist_trigger:
           name: Artist trigger
           description: The trigger sentences to request music from a specific artist.
@@ -181,7 +181,7 @@ blueprint:
               multiple: false
           default: '{{ ''Shuffling'' if ''shuffle'' in trigger.sentence | lower  else ''''}} {{ trigger.slots.media_name }} 
             {{ '''' if ''shuffle'' in trigger.sentence | lower else ''playing''}} on {{ mass_player_name
-            }}'
+            }} {{ '' from the beginnning'' if ''beginning'' in trigger.sentence | lower else '''' }}'
 triggers:
 - trigger: conversation
   command: !input album_trigger
@@ -206,6 +206,7 @@ actions:
   variables:
     version: 20250404
     shuffle: '{{ ''shuffle'' in trigger.sentence | lower }}'
+    restart_media: '{{ ''beginning'' in trigger.sentence | lower }}'
     default_player_entity_id: !input default_player_entity_id_input
     trigger_id: '{{ trigger.id }}'
     area_or_player_name: '{{ trigger.slots.area_or_player_name | default }}'
@@ -244,6 +245,15 @@ actions:
     shuffle: '{{ shuffle }}'
   target:
     entity_id: '{{ mass_player_entity_id }}'
+- if:
+    - condition: template
+      value_template: "{{ restart_media }}"
+  then:
+    - action: media_player.media_seek
+      data:
+        seek_position: 0
+      target:
+        entity_id: '{{ mass_player_entity_id }}'
 - alias: Send back the response
   set_conversation_response: !input response_input
 mode: single
